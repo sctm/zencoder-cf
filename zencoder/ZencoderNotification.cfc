@@ -36,7 +36,14 @@
 			var data = arrayNew(1);
 			var i = 1;
 			for (; i <= arrayLen(variables.notificationArray); i++) {
-				arrayAppend(data, variables.notificationArray[i]);
+				if (compareNoCase("http", left(trim(variables.notificationArray[i]), 4)) == 0) {
+					arrayAppend(data, {
+						format 	= "json",
+						url 	= trim(variables.notificationArray[i])
+					});
+				} else {
+					arrayAppend(data, trim(variables.notificationArray[i]));
+				}
 			}
 			return data;
 		</cfscript>

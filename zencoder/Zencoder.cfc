@@ -163,7 +163,7 @@
 		</cftry>
 		<cfscript>
 			if ((cfhttp.Responseheader.Status_Code == 201) or (cfhttp.Responseheader.Status_Code == 200)) {
-				result = jsonDecode(cfhttp.FileContent);
+				result.data = jsonDecode(cfhttp.FileContent);
 				result.success = true;
 			} else {
 				result.success = false;
