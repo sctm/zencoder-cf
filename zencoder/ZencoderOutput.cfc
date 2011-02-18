@@ -48,7 +48,7 @@
 			<cfargument name="buffer_size"		type="numeric" 	required="no" default="0" 			hint="Used in conjunction with Max Bitrate. This number should be determined by the settings of your streaming server, or your targeted playback device. For example, Buffer Size should be set to 10000 for an iPhone. Default: 0 for none.">
 			<cfargument name="audio_codec"		type="string" 	required="no" default=""	 		hint="The output audio codec to use.">
 			<cfargument name="audio_quality"	type="numeric" 	required="no" default="3" 			hint="The desired output audio quality, from 1 to 5.">
-			<cfargument name="audio_bitrate"	type="numeric" 	required="no" default="64" 			hint="An output bitrate setting, in Kbps. This should be a multiple of 16, and lower than 160kbps per channel (320kbps for stereo).">
+			<cfargument name="audio_bitrate"	type="numeric" 	required="no" default="0" 			hint="An output bitrate setting, in Kbps. This should be a multiple of 16, and lower than 160kbps per channel (320kbps for stereo).">
 			<cfargument name="max_frame_rate"	type="numeric" 	required="no" default="0" 			hint="Rather than setting an exact frame rate, which may involve increase the frame rate (and therefore the bitrate) of some content, you can set a Max Frame Rate instead.">
 			<cfargument name="frame_rate"		type="numeric" 	required="no" default="0" 			hint="The output frame rate to use, as a decimal number (e.g. 15, or 24.98). 0 for system default.">
 			<cfargument name="keyframe_interval" type="numeric" required="no" default="0" 			hint="Set the maximum number of frames between each keyframe. By default, a keyframe will be created at most every 250 frames. 0 to use default.">
@@ -97,8 +97,11 @@
 			if (variables.bitrate_cap) 			{data.bitrate_cap 		= variables.bitrate_cap;}
 			if (variables.buffer_size) 			{data.buffer_size	 	= variables.buffer_size;}
 			if (len(variables.audio_codec))		{data.audio_codec 		= variables.audio_codec;}
-			data.audio_quality 		= variables.audio_quality;
-			data.audio_bitrate 		= variables.audio_bitrate;
+			if (variables.audio_bitrate) {
+				data.audio_bitrate 		= variables.audio_bitrate;
+			} else {
+				data.audio_quality 		= variables.audio_quality;
+			}
 			if (variables.max_frame_rate) 		{data.max_frame_rate 	= variables.max_frame_rate;}
 			if (variables.frame_rate) 			{data.frame_rate 		= variables.frame_rate;}
 			if (variables.keyframe_interval) 	{data.keyframe_interval	= variables.keyframe_interval;}
