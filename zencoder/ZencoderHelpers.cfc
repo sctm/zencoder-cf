@@ -26,9 +26,8 @@
 	<!--- Decode from JSON to CF --->
 	<cffunction name="jsonDecode" access="public" returntype="any" output="no" hint="Converts data from JSON to CF format">
 		<!--- ************************************************************* --->
-		<cfargument name="data" type="string" required="Yes" />
+		<cfargument name="data" type="string" required="Yes" hint="JSON Packet" />
 		<!--- ************************************************************* --->
-		
 		<!--- DECLARE VARIABLES --->
 		<cfset var ar = ArrayNew(1) />
 		<cfset var st = StructNew() />
@@ -56,8 +55,8 @@
 		<cfset var unescapeVals2 = '\,",/,b,t,n,f,r' />
 		<cfset var unescapetoVals2 = '\,",/,#Chr(8)#,#Chr(9)#,#Chr(10)#,#Chr(12)#,#Chr(13)#' />
 		<cfset var dJSONString = "" />
-		
 		<cfset var _data = Trim(arguments.data) />
+		<cfset var pos = 0>
 		
 		<!--- NUMBER --->
 		<cfif IsNumeric(_data)>
@@ -155,7 +154,7 @@
 					
 					<!--- If data type is array, append data to the array --->
 					<cfif dataType EQ "array">
-						<cfset arrayappend( ar, decode(dataStr) ) />
+						<cfset arrayappend( ar, jsonDecode(dataStr) ) />
 					<!--- If data type is struct or query... --->
 					<cfelseif dataType EQ "struct" OR dataType EQ "query">
 						<cfset dataStr = Mid(_data, startPos, i-startPos) />
@@ -176,19 +175,19 @@
 						
 						<!--- If struct, add to the structure --->
 						<cfif dataType EQ "struct">
-							<cfset StructInsert( st, structKey, decode(structVal) ) />
+							<cfset StructInsert( st, structKey, jsonDecode(structVal) ) />
 						
 						<!--- If query, build the query --->
 						<cfelse>
 							<cfif structKey EQ "recordcount">
-								<cfset qRows = decode(structVal) />
+								<cfset qRows = jsonDecode(structVal) />
 							<cfelseif structKey EQ "columnlist">
-								<cfset st = QueryNew( decode(structVal) ) />
+								<cfset st = QueryNew( jsonDecode(structVal) ) />
 								<cfif qRows>
 									<cfset QueryAddRow(st, qRows) />
 								</cfif>
 							<cfelseif structKey EQ "data">
-								<cfset qData = decode(structVal) />
+								<cfset qData = jsonDecode(structVal) />
 								<cfset ar = StructKeyArray(qData) />
 								<cfloop from="1" to="#ArrayLen(ar)#" index="j">
 									<cfloop from="1" to="#st.recordcount#" index="qRows">
@@ -223,25 +222,27 @@
 		
 		<!--- INVALID JSON --->
 		<cfelse>
-			<cfthrow message="Invalid JSON" detail="The document you are trying to decode is not in valid JSON format" />
+			<cfthrow message="Invalid JSON" detail="The document you are trying to jsonDecode is not in valid JSON format" />
 		</cfif>
 	</cffunction>
 	
 	<!--- CONVERTS DATA FROM CF TO JSON FORMAT --->
 	<cffunction name="jsonEncode" access="public" returntype="string" output="No" hint="Converts data from CF to JSON format">
 		<!--- ************************************************************* --->
-		<cfargument name="data" type="any" required="Yes" />
-		<cfargument name="queryFormat" type="string" required="No" default="query" /> <!--- query or array --->
-		<cfargument name="queryKeyCase" type="string" required="No" default="lower" /> <!--- lower or upper --->
-		<cfargument name="stringNumbers" type="boolean" required="No" default=false />
-		<cfargument name="formatDates" type="boolean" required="No" default=false />
-		<cfargument name="columnListFormat" type="string" required="No" default="string" /> <!--- string or array --->
+		<cfargument name="data" 			type="any" 		required="Yes" hint="The CF structure" />
+		<cfargument name="queryFormat" 		type="string" 	required="No" default="query" hint="query or array" />
+		<cfargument name="queryKeyCase" 	type="string" 	required="No" default="lower" hint="lower or upper"/>
+		<cfargument name="stringNumbers" 	type="boolean" 	required="No" default="false" >
+		<cfargument name="formatDates" 		type="boolean" 	required="No" default="false" >
+		<cfargument name="columnListFormat" type="string" 	required="No" default="string" hint="string or array" >
+		<cfargument name="keyCase"			type="string" 	required="No" default="lower"  hint="lower or upper"/>
 		<!--- ************************************************************* --->
 		
 		<!--- VARIABLE DECLARATION --->
 		<cfset var jsonString = "" />
 		<cfset var tempVal = "" />
 		<cfset var arKeys = "" />
+		<cfset var arKey = "" />
 		<cfset var colPos = 1 />
 		<cfset var i = 1 />
 		<cfset var column = ""/>
@@ -254,7 +255,7 @@
 		<cfset var escapeVals = "\,"",/,#Chr(8)#,#Chr(9)#,#Chr(10)#,#Chr(12)#,#Chr(13)#" />
 		
 		<cfset var _data = arguments.data />
-
+		
 		<!--- BOOLEAN --->
 		<cfif IsBoolean(_data) AND NOT IsNumeric(_data) AND NOT ListFindNoCase("Yes,No", _data)>
 			<cfreturn LCase(ToString(_data)) />
@@ -275,7 +276,7 @@
 		<cfelseif IsArray(_data)>
 			<cfset dJSONString = createObject('java','java.lang.StringBuffer').init("") />
 			<cfloop from="1" to="#ArrayLen(_data)#" index="i">
-				<cfset tempVal = encode( _data[i], arguments.queryFormat, arguments.queryKeyCase, arguments.stringNumbers, arguments.formatDates, arguments.columnListFormat ) />
+				<cfset tempVal = jsonEncode( _data[i], arguments.queryFormat, arguments.queryKeyCase, arguments.stringNumbers, arguments.formatDates, arguments.columnListFormat ) />
 				<cfif dJSONString.toString() EQ "">
 					<cfset dJSONString.append(tempVal) />
 				<cfelse>
@@ -290,11 +291,19 @@
 			<cfset dJSONString = createObject('java','java.lang.StringBuffer').init("") />
 			<cfset arKeys = StructKeyArray(_data) />
 			<cfloop from="1" to="#ArrayLen(arKeys)#" index="i">
-				<cfset tempVal = encode( _data[ arKeys[i] ], arguments.queryFormat, arguments.queryKeyCase, arguments.stringNumbers, arguments.formatDates, arguments.columnListFormat ) />
-				<cfif dJSONString.toString() EQ "">
-					<cfset dJSONString.append('"' & arKeys[i] & '":' & tempVal) />
+				<cfset tempVal = jsonEncode( _data[ arKeys[i] ], arguments.queryFormat, arguments.queryKeyCase, arguments.stringNumbers, arguments.formatDates, arguments.columnListFormat ) />
+				
+				<!--- Key to lower Case? --->
+				<cfif arguments.keyCase EQ "lower">
+					<cfset arKey = LCASE(arKeys[i]) />
 				<cfelse>
-					<cfset dJSONString.append("," & '"' & arKeys[i] & '":' & tempVal) />
+					<cfset arKey = UCASE(arKeys[i]) />
+				</cfif>
+				
+				<cfif dJSONString.toString() EQ "">
+					<cfset dJSONString.append('"' & arKey & '":' & tempVal) />
+				<cfelse>
+					<cfset dJSONString.append("," & '"' & arKey & '":' & tempVal) />
 				</cfif>
 			</cfloop>
 			
@@ -318,12 +327,14 @@
 			</cfif>
 			
 			<cfset dJSONString.append('"#recordcountKey#":' & _data.recordcount) />
+			
 			<cfif arguments.columnListFormat EQ "array">
 				<cfset columnlist = "[" & ListQualify(columnlist, '"') & "]" />
 				<cfset dJSONString.append(',"#columnlistKey#":' & columnlist) />
 			<cfelse>
 				<cfset dJSONString.append(',"#columnlistKey#":"' & columnlist & '"') />
 			</cfif>
+			
 			<cfset dJSONString.append(',"#dataKey#":') />
 			
 			<!--- Make query a structure of arrays --->
@@ -342,7 +353,7 @@
 					
 					<cfloop from="1" to="#_data.recordcount#" index="i">
 						<!--- Get cell value; recurse to get proper format depending on string/number/boolean data type --->
-						<cfset tempVal = encode( _data[column][i], arguments.queryFormat, arguments.queryKeyCase, arguments.stringNumbers, arguments.formatDates, arguments.columnListFormat ) />
+						<cfset tempVal = jsonEncode( _data[column][i], arguments.queryFormat, arguments.queryKeyCase, arguments.stringNumbers, arguments.formatDates, arguments.columnListFormat ) />
 						
 						<cfif i GT 1>
 							<cfset dJSONString.append(",") />
@@ -365,7 +376,7 @@
 					<cfset dJSONString.append("{") />
 					<cfset colPos = 1 />
 					<cfloop list="#columnlist#" delimiters="," index="column">
-						<cfset tempVal = encode( _data[column][CurrentRow], arguments.queryFormat, arguments.queryKeyCase, arguments.stringNumbers, arguments.formatDates, arguments.columnListFormat ) />
+						<cfset tempVal = jsonEncode( _data[column][CurrentRow], arguments.queryFormat, arguments.queryKeyCase, arguments.stringNumbers, arguments.formatDates, arguments.columnListFormat ) />
 						
 						<cfif colPos GT 1>
 							<cfset dJSONString.append(",") />
@@ -395,16 +406,16 @@
 	<!--- Validate a JSON document --->
 	<cffunction name="jsonValidate" access="remote" output="yes" returntype="boolean" hint="I validate a JSON document against a JSON schema">
 		<!--- ************************************************************* --->
-		<cfargument name="doc" type="string" required="No" />
-		<cfargument name="schema" type="string" required="No" />
-		<cfargument name="errorVar" type="string" required="No" default="jsonSchemaErrors" />
-		<cfargument name="stopOnError" type="boolean" required="No" default=true />
+		<cfargument name="doc" 			type="string" 	required="No" />
+		<cfargument name="schema"	 	type="string" 	required="No" />
+		<cfargument name="errorVar" 	type="string" 	required="No" default="jsonSchemaErrors" />
+		<cfargument name="stopOnError" 	type="boolean" 	required="No" default=true />
 		<!--- These arguments are for internal use only --->
-		<cfargument name="_doc" type="any" required="No" />
-		<cfargument name="_schema" type="any" required="No" />
-		<cfargument name="_item" type="string" required="No" default="root" />
-		<!--- ************************************************************* --->
-    	
+		<cfargument name="_doc" 		type="any" 		required="No" />
+		<cfargument name="_schema" 		type="any" 		required="No" />
+		<cfargument name="_item" 		type="string" 	required="No" default="root" />
+    	<!--- ************************************************************* --->
+		
 		<cfset var schemaRules = "" />
 		<cfset var jsonDoc = "" />
 		<cfset var i = 0 />
@@ -421,8 +432,8 @@
 				<cffile action="READ" file="#arguments.schema#" variable="arguments.schema" />
 			</cfif>
 			
-			<cfset jsonDoc = decode(arguments.doc) />
-			<cfset schemaRules = decode(arguments.schema) />
+			<cfset jsonDoc = jsonDecode(arguments.doc) />
+			<cfset schemaRules = jsonDecode(arguments.schema) />
 		
 			<cfset request[arguments.errorVar] = ArrayNew(1) />
 		<cfelseif StructKeyExists(arguments, "_doc")>
@@ -454,7 +465,7 @@
 				<cfif StructKeyExists(schemaRules, "items")>
 					<cfloop collection="#jsonDoc#" item="key">
 						<cfif StructKeyExists(schemaRules.items, key)>
-							<cfset isValid = validate(_doc=jsonDoc[key], _schema=schemaRules.items[key], _item="#arguments._item#['#key#']", errorVar=arguments.errorVar, stopOnError=arguments.stopOnError) />
+							<cfset isValid = jsonValidate(_doc=jsonDoc[key], _schema=schemaRules.items[key], _item="#arguments._item#['#key#']", errorVar=arguments.errorVar, stopOnError=arguments.stopOnError) />
 							<cfif arguments.stopOnError AND NOT isValid>
 								<cfreturn false />
 							</cfif>
@@ -488,7 +499,7 @@
 				<!--- Loop over the array elements and if there are rules for the array items recurse to enforce them --->
 				<cfif StructKeyExists(schemaRules, "items")>
 					<cfloop from="1" to="#ArrayLen(jsonDoc)#" index="i">
-						<cfset isValid = validate(_doc=jsonDoc[i], _schema=schemaRules.items, _item="#arguments._item#[#i#]", errorVar=arguments.errorVar, stopOnError=arguments.stopOnError) />
+						<cfset isValid = jsonValidate(_doc=jsonDoc[i], _schema=schemaRules.items, _item="#arguments._item#[#i#]", errorVar=arguments.errorVar, stopOnError=arguments.stopOnError) />
 						<cfif arguments.stopOnError AND NOT isValid>
 							<cfreturn false />
 						</cfif>

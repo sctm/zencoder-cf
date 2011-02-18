@@ -37,7 +37,7 @@
 			<cfargument name="base_url" 		type="string" 	required="yes" hint="This is the base URL to export the transcoded media.  Determines a directory to put the output file in, but not the filename.">
 			<cfargument name="filename" 		type="string" 	required="yes" hint="This is the API Base URL for the Zencoder API.">
 			<cfargument name="label" 			type="string" 	required="yes" hint="If set to zero, it will use the Zencoder default of 5.  The maximum allowed is 25.">
-			<cfargument name="video_codec"		type="string" 	required="no" default="h264" 		hint="The output video codec to use.">
+			<cfargument name="video_codec"		type="string" 	required="no" default="" 			hint="The output video codec to use.">
 			<cfargument name="speed"			type="numeric" 	required="no" default="2" 			hint="A target transcoding speed, from 1 to 5.">
 			<cfargument name="width"			type="numeric" 	required="no" default="0" 			hint="A width for the target media.  0 for not set.">
 			<cfargument name="height"			type="numeric" 	required="no" default="0" 			hint="A height for the target media.  0 for not set.">
@@ -46,7 +46,7 @@
 			<cfargument name="video_bitrate"	type="numeric" 	required="no" default="0" 			hint="The desired output bitrate for a video, expressed in Kbps.">
 			<cfargument name="bitrate_cap"		type="numeric" 	required="no" default="0" 			hint="The max peak bitrate throughout a video.  0 for not no setting.">
 			<cfargument name="buffer_size"		type="numeric" 	required="no" default="0" 			hint="Used in conjunction with Max Bitrate. This number should be determined by the settings of your streaming server, or your targeted playback device. For example, Buffer Size should be set to 10000 for an iPhone. Default: 0 for none.">
-			<cfargument name="audio_codec"		type="string" 	required="no" default="aac" 		hint="The output audio codec to use.">
+			<cfargument name="audio_codec"		type="string" 	required="no" default=""	 		hint="The output audio codec to use.">
 			<cfargument name="audio_quality"	type="numeric" 	required="no" default="3" 			hint="The desired output audio quality, from 1 to 5.">
 			<cfargument name="audio_bitrate"	type="numeric" 	required="no" default="64" 			hint="An output bitrate setting, in Kbps. This should be a multiple of 16, and lower than 160kbps per channel (320kbps for stereo).">
 			<cfargument name="max_frame_rate"	type="numeric" 	required="no" default="0" 			hint="Rather than setting an exact frame rate, which may involve increase the frame rate (and therefore the bitrate) of some content, you can set a Max Frame Rate instead.">
@@ -87,7 +87,7 @@
 			data.base_url 			= variables.base_url;
 			data.filename 			= variables.filename;
 			data.label 				= variables.label;
-			data.video_codec 		= variables.video_codec;
+			if (len(variables.video_codec))		{data.video_codec 		= variables.video_codec;}
 			data.speed 				= variables.speed;
 			if (variables.width) 				{data.width 			= variables.width;}
 			if (variables.height) 				{data.height 			= variables.height;}
@@ -96,7 +96,7 @@
 			if (variables.video_bitrate) 		{data.video_bitrate 	= variables.video_bitrate;}
 			if (variables.bitrate_cap) 			{data.bitrate_cap 		= variables.bitrate_cap;}
 			if (variables.buffer_size) 			{data.buffer_size	 	= variables.buffer_size;}
-			data.audio_codec 		= variables.audio_codec;
+			if (len(variables.audio_codec))		{data.audio_codec 		= variables.audio_codec;}
 			data.audio_quality 		= variables.audio_quality;
 			data.audio_bitrate 		= variables.audio_bitrate;
 			if (variables.max_frame_rate) 		{data.max_frame_rate 	= variables.max_frame_rate;}
