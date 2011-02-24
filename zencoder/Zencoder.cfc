@@ -135,7 +135,13 @@
 			<cfargument name="methodBody" 		type="struct" 	required="no" 	default="#javaCast("null", 0)#"	hint="This is the API method body that will be sent as a object.">
 		<cfscript>
 			var result = structNew();
-			result.path = "#variables.api_base_url#/#apiMethodPath#";
+			var apiPath = "#variables.api_base_url#/#apiMethodPath#";
+			result.path = apiPath;		// used for debugging
+			
+			// if the HTTP method is 'get', attach the api_key to the URL
+			if (compareNoCase(httpMethod, "get") == 0) {
+				apiPath &= "?api_key=" & variables.api_key;
+			}
 		</cfscript>
 		
 		<!--- Remove the JsafeJCE security provider and add it back after done: http://forums.adobe.com/message/2312598, http://www.coldfusionjedi.com/index.cfm/2011/1/12/Diagnosing-a-CFHTTP-issue--peer-not-authenticated --->
@@ -145,7 +151,7 @@
 		
 		<!--- perform the API call --->
 		<cftry>
-			<cfhttp url="#variables.api_base_url#/#apiMethodPath#" timeout="#variables.api_timeout#" method="#httpMethod#">
+			<cfhttp url="#apiPath#" timeout="#variables.api_timeout#" method="#httpMethod#">
 				<cfhttpparam type="header" name="Content-Type" 	value="application/json" />
 				<cfhttpparam type="header" name="Accept" 		value="application/json" />
 				<cfif not isNull(methodBody)>
