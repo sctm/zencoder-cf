@@ -1,5 +1,9 @@
 # ColdFusion Zencoder API
-********************************************************************************
+==================================================
+
+License
+-------
+
 ColdFusion Zencoder API
 Copyright (C) 2010 SCTM Enterprises, LLC (Todd Schlomer)
 
@@ -14,8 +18,10 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************
+along with this program.  If not, see <[http://www.gnu.org/licenses/](http://www.gnu.org/licenses/)>.
+
+About
+-----
 
 A Coldfusion implementation for the [Zencoder](http://zencoder.com) API.
 
