@@ -43,6 +43,7 @@
 	<cfproperty name="max_frame_rate" 	type="numeric" 	hint="Rather than setting an exact frame rate, which may involve increase the frame rate (and therefore the bitrate) of some content, you can set a Max Frame Rate instead." />
 	<cfproperty name="frame_rate" 		type="numeric" 	hint="The output frame rate to use, as a decimal number (e.g. 15, or 24.98). 0 for system default." />
 	<cfproperty name="keyframe_interval" type="numeric" hint="Set the maximum number of frames between each keyframe. By default, a keyframe will be created at most every 250 frames. 0 to use default." />
+	<cfproperty name="keyframe_rate" 	type="numeric" 	hint="Set the number of keyframes per second. So a value of 0.5 would result in one keyframe every two seconds. A value of 3 would result in three keyframes per second." />
 	<cfproperty name="notifications" 	type="ZencoderNotification" hint="This is the notification(s) to use for this output." />
 	
 	<!--- init --->
@@ -65,6 +66,7 @@
 			<cfargument name="max_frame_rate"	type="numeric" 	required="no" default="0" 			hint="Rather than setting an exact frame rate, which may involve increase the frame rate (and therefore the bitrate) of some content, you can set a Max Frame Rate instead.">
 			<cfargument name="frame_rate"		type="numeric" 	required="no" default="0" 			hint="The output frame rate to use, as a decimal number (e.g. 15, or 24.98). 0 for system default.">
 			<cfargument name="keyframe_interval" type="numeric" required="no" default="0" 			hint="Set the maximum number of frames between each keyframe. By default, a keyframe will be created at most every 250 frames. 0 to use default.">
+			<cfargument name="keyframe_rate" 	type="numeric" 	required="no" default="0" 			hint="Set the number of keyframes per second. So a value of 0.5 would result in one keyframe every two seconds. A value of 3 would result in three keyframes per second.">
 			<cfargument name="notifications"	type="ZencoderNotification" required="no" default="#javaCast("null", 0)#" hint="This is the notification(s) to use for this output.">
 		<cfscript>
 			// set the data to the variables scope
@@ -86,6 +88,7 @@
 			variables.max_frame_rate 	= arguments.max_frame_rate;
 			variables.frame_rate 		= arguments.frame_rate;
 			variables.keyframe_interval = arguments.keyframe_interval;
+			variables.keyframe_rate		= arguments.keyframe_rate;
 			if (not isNull(arguments.notifications)) {
 				variables.notifications 	= arguments.notifications;
 			}
@@ -118,6 +121,7 @@
 			if (variables.max_frame_rate) 		{data.max_frame_rate 	= variables.max_frame_rate;}
 			if (variables.frame_rate) 			{data.frame_rate 		= variables.frame_rate;}
 			if (variables.keyframe_interval) 	{data.keyframe_interval	= variables.keyframe_interval;}
+			if (variables.keyframe_rate) 		{data.keyframe_rate		= variables.keyframe_rate;}
 			if (not isNull(variables.notifications)) {
 				data.notifications 	= variables.notifications.getData();
 			}
