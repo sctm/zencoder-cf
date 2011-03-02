@@ -37,9 +37,11 @@
 	<cfproperty name="video_bitrate" 	type="numeric" 	hint="The desired output bitrate for a video, expressed in Kbps." />
 	<cfproperty name="bitrate_cap" 		type="numeric" 	hint="The max peak bitrate throughout a video.  0 for not no setting." />
 	<cfproperty name="buffer_size" 		type="numeric" 	hint="Used in conjunction with Max Bitrate. This number should be determined by the settings of your streaming server, or your targeted playback device. For example, Buffer Size should be set to 10000 for an iPhone. Default: 0 for none." />
+	<cfproperty name="max_video_bitrate" type="string" 	hint="A maximum average bitrate for a movie. Overrides both the quality and video_bitrate settings to ensure that a bitrate doesn't exceed the provided number." />
 	<cfproperty name="audio_codec" 		type="string" 	hint="The output audio codec to use." />
 	<cfproperty name="audio_quality" 	type="numeric" 	hint="The desired output audio quality, from 1 to 5." />
 	<cfproperty name="audio_bitrate" 	type="numeric" 	hint="An output bitrate setting, in Kbps. This should be a multiple of 16, and lower than 160kbps per channel (320kbps for stereo)." />
+	<cfproperty name="audio_sample_rate" type="numeric" hint="Audio sample rate in Hz.  A valid sample rate. Depends on the codec; typically 8000, 11025, 12000, 16000, 22050, 32000, 44100, 48000" />
 	<cfproperty name="max_frame_rate" 	type="numeric" 	hint="Rather than setting an exact frame rate, which may involve increase the frame rate (and therefore the bitrate) of some content, you can set a Max Frame Rate instead." />
 	<cfproperty name="frame_rate" 		type="numeric" 	hint="The output frame rate to use, as a decimal number (e.g. 15, or 24.98). 0 for system default." />
 	<cfproperty name="keyframe_interval" type="numeric" hint="Set the maximum number of frames between each keyframe. By default, a keyframe will be created at most every 250 frames. 0 to use default." />
@@ -60,9 +62,11 @@
 			<cfargument name="video_bitrate"	type="numeric" 	required="no" default="0" 			hint="The desired output bitrate for a video, expressed in Kbps.">
 			<cfargument name="bitrate_cap"		type="numeric" 	required="no" default="0" 			hint="The max peak bitrate throughout a video.  0 for not no setting.">
 			<cfargument name="buffer_size"		type="numeric" 	required="no" default="0" 			hint="Used in conjunction with Max Bitrate. This number should be determined by the settings of your streaming server, or your targeted playback device. For example, Buffer Size should be set to 10000 for an iPhone. Default: 0 for none.">
+			<cfargument name="max_video_bitrate" type="numeric" required="no" default="0" 			hint="A maximum average bitrate for a movie. Overrides both the quality and video_bitrate settings to ensure that a bitrate doesn't exceed the provided number.">
 			<cfargument name="audio_codec"		type="string" 	required="no" default=""	 		hint="The output audio codec to use.">
 			<cfargument name="audio_quality"	type="numeric" 	required="no" default="3" 			hint="The desired output audio quality, from 1 to 5.">
 			<cfargument name="audio_bitrate"	type="numeric" 	required="no" default="0" 			hint="An output bitrate setting, in Kbps. This should be a multiple of 16, and lower than 160kbps per channel (320kbps for stereo).">
+			<cfargument name="audio_sample_rate" type="numeric" required="no" default="0" 			hint="Audio sample rate in Hz.  A valid sample rate. Depends on the codec; typically 8000, 11025, 12000, 16000, 22050, 32000, 44100, 48000">
 			<cfargument name="max_frame_rate"	type="numeric" 	required="no" default="0" 			hint="Rather than setting an exact frame rate, which may involve increase the frame rate (and therefore the bitrate) of some content, you can set a Max Frame Rate instead.">
 			<cfargument name="frame_rate"		type="numeric" 	required="no" default="0" 			hint="The output frame rate to use, as a decimal number (e.g. 15, or 24.98). 0 for system default.">
 			<cfargument name="keyframe_interval" type="numeric" required="no" default="0" 			hint="Set the maximum number of frames between each keyframe. By default, a keyframe will be created at most every 250 frames. 0 to use default.">
@@ -82,9 +86,11 @@
 			variables.video_bitrate 	= arguments.video_bitrate;
 			variables.bitrate_cap 		= arguments.bitrate_cap;
 			variables.buffer_size 		= arguments.buffer_size;
+			variables.max_video_bitrate	= arguments.max_video_bitrate;
 			variables.audio_codec 		= arguments.audio_codec;
 			variables.audio_quality 	= arguments.audio_quality;
 			variables.audio_bitrate 	= arguments.audio_bitrate;
+			variables.audio_sample_rate	= arguments.audio_sample_rate;
 			variables.max_frame_rate 	= arguments.max_frame_rate;
 			variables.frame_rate 		= arguments.frame_rate;
 			variables.keyframe_interval = arguments.keyframe_interval;
@@ -112,12 +118,14 @@
 			if (variables.video_bitrate) 		{data.video_bitrate 	= variables.video_bitrate;}
 			if (variables.bitrate_cap) 			{data.bitrate_cap 		= variables.bitrate_cap;}
 			if (variables.buffer_size) 			{data.buffer_size	 	= variables.buffer_size;}
+			if (variables.max_video_bitrate)	{data.max_video_bitrate	= variables.max_video_bitrate;}
 			if (len(variables.audio_codec))		{data.audio_codec 		= variables.audio_codec;}
 			if (variables.audio_bitrate) {
 				data.audio_bitrate 		= variables.audio_bitrate;
 			} else {
 				data.audio_quality 		= variables.audio_quality;
 			}
+			if (variables.audio_sample_rate)	{data.audio_sample_rate	= variables.audio_sample_rate;}
 			if (variables.max_frame_rate) 		{data.max_frame_rate 	= variables.max_frame_rate;}
 			if (variables.frame_rate) 			{data.frame_rate 		= variables.frame_rate;}
 			if (variables.keyframe_interval) 	{data.keyframe_interval	= variables.keyframe_interval;}
