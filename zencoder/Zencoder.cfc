@@ -181,7 +181,7 @@
 		</cffinally>
 		</cftry>
 		<cfscript>
-			if ((cfhttp.Responseheader.Status_Code == 201) or (cfhttp.Responseheader.Status_Code == 200)) {
+			if (isDefined("cfhttp.Responseheader.Status_Code") and ((cfhttp.Responseheader.Status_Code == 201) or (cfhttp.Responseheader.Status_Code == 200))) {
 				result.data = jsonDecode(cfhttp.FileContent);
 				result.success = true;
 			} else {
