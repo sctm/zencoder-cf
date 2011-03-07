@@ -168,7 +168,9 @@
 				<cfhttpparam type="header" name="Content-Type" 	value="application/json" />
 				<cfhttpparam type="header" name="Accept" 		value="application/json" />
 				<cfif not isNull(methodBody)>
-					<cfhttpparam type="Body" value="#jsonEncode(methodBody)#" />
+					<!---<cfhttpparam type="Body" value="#jsonEncode(methodBody)#" />--->
+					<!--- hard code a hack to rename the 'Cache-Control' header to have the correct case since Zencoder is case sensitive for the header values; contacting them to remove this restriction --->
+					<cfhttpparam type="Body" value="#replaceNoCase(jsonEncode(methodBody), "Cache-Control", "Cache-Control", "all")#" />
 				</cfif>
 			</cfhttp>
 		<cffinally>

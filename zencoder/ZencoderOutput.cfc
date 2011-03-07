@@ -49,6 +49,7 @@
 	<cfproperty name="public" 			type="boolean" 	hint="Use the public API setting to flag a file output to S3 as being publicly readable. This is done by granting the READ permission to the AllUsers group." />
 	<cfproperty name="notifications" 	type="ZencoderNotification" hint="This is the notification(s) to use for this output." />
 	<cfproperty name="thumbnails" 		type="ZencoderThumbnails" 	hint="This is the thumbnail(s) to use for this output." />
+	<cfproperty name="headers"		 	type="struct" 	hint="S3 supports the sending of headers with your file when it is uploaded to S3. Zencoder support setting a limited subset of the S3 headers: Cache-Control, Content-Disposition, Content-Encoding, Content-Type, Expires, x-amz-acl, x-amz-storage-class, and x-amz-meta-*." />
 	
 	<!--- init --->
 	<cffunction name="init" access="public" returntype="ZencoderOutput" output="false" hint="Constructor method.">
@@ -76,6 +77,7 @@
 			<cfargument name="public" 			type="boolean" 	required="no" default="false"		hint="Use the public API setting to flag a file output to S3 as being publicly readable. This is done by granting the READ permission to the AllUsers group.">
 			<cfargument name="notifications"	type="ZencoderNotification" required="no" default="#javaCast("null", 0)#" hint="This is the notification(s) to use for this output.">
 			<cfargument name="thumbnails"		type="ZencoderThumbnails" 	required="no" default="#javaCast("null", 0)#" hint="This is the thumbnail(s) to use for this output.">
+			<cfargument name="headers"			type="struct" 				required="no" default="#javaCast("null", 0)#" hint="S3 supports the sending of headers with your file when it is uploaded to S3. Zencoder support setting a limited subset of the S3 headers: Cache-Control, Content-Disposition, Content-Encoding, Content-Type, Expires, x-amz-acl, x-amz-storage-class, and x-amz-meta-*.">
 		<cfscript>
 			// set the data to the variables scope
 			variables.base_url 			= arguments.base_url;
@@ -105,6 +107,9 @@
 			}
 			if (not isNull(arguments.thumbnails)) {
 				variables.thumbnails 	= arguments.thumbnails;
+			}
+			if (not isNull(arguments.headers)) {
+				variables.headers 	= arguments.headers;
 			}
 			return this;
 		</cfscript>
@@ -144,6 +149,9 @@
 			}
 			if (not isNull(variables.thumbnails)) {
 				data.thumbnails 	= variables.thumbnails.getData();
+			}
+			if (not isNull(variables.headers)) {
+				data.headers 	= variables.headers;
 			}
 			return data;
 		</cfscript>
