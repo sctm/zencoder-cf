@@ -36,10 +36,11 @@
 	</cffunction>
 	
 	<!--- addOutput --->
-	<cffunction name="addOutput" access="public" returntype="void" output="false" hint="This will add a Zencoder job output to the array.">
+	<cffunction name="addOutput" access="public" returntype="ZencoderOutputArray" output="false" hint="This will add a Zencoder job output to the array.">
 			<cfargument name="output" type="ZencoderOutput" required="yes" hint="This is a Zencoder job output.">
 		<cfscript>
 			arrayAppend(variables.outputArray, arguments.output);
+			return this;
 		</cfscript>
 	</cffunction>
 	

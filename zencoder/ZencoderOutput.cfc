@@ -46,6 +46,7 @@
 	<cfproperty name="frame_rate" 		type="numeric" 	hint="The output frame rate to use, as a decimal number (e.g. 15, or 24.98). 0 for system default." />
 	<cfproperty name="keyframe_interval" type="numeric" hint="Set the maximum number of frames between each keyframe. By default, a keyframe will be created at most every 250 frames. 0 to use default." />
 	<cfproperty name="keyframe_rate" 	type="numeric" 	hint="Set the number of keyframes per second. So a value of 0.5 would result in one keyframe every two seconds. A value of 3 would result in three keyframes per second." />
+	<cfproperty name="public" 			type="boolean" 	hint="Use the public API setting to flag a file output to S3 as being publicly readable. This is done by granting the READ permission to the AllUsers group." />
 	<cfproperty name="notifications" 	type="ZencoderNotification" hint="This is the notification(s) to use for this output." />
 	<cfproperty name="thumbnails" 		type="ZencoderThumbnails" 	hint="This is the thumbnail(s) to use for this output." />
 	
@@ -72,6 +73,7 @@
 			<cfargument name="frame_rate"		type="numeric" 	required="no" default="0" 			hint="The output frame rate to use, as a decimal number (e.g. 15, or 24.98). 0 for system default.">
 			<cfargument name="keyframe_interval" type="numeric" required="no" default="0" 			hint="Set the maximum number of frames between each keyframe. By default, a keyframe will be created at most every 250 frames. 0 to use default.">
 			<cfargument name="keyframe_rate" 	type="numeric" 	required="no" default="0" 			hint="Set the number of keyframes per second. So a value of 0.5 would result in one keyframe every two seconds. A value of 3 would result in three keyframes per second.">
+			<cfargument name="public" 			type="boolean" 	required="no" default="false"		hint="Use the public API setting to flag a file output to S3 as being publicly readable. This is done by granting the READ permission to the AllUsers group.">
 			<cfargument name="notifications"	type="ZencoderNotification" required="no" default="#javaCast("null", 0)#" hint="This is the notification(s) to use for this output.">
 			<cfargument name="thumbnails"		type="ZencoderThumbnails" 	required="no" default="#javaCast("null", 0)#" hint="This is the thumbnail(s) to use for this output.">
 		<cfscript>
@@ -97,6 +99,7 @@
 			variables.frame_rate 		= arguments.frame_rate;
 			variables.keyframe_interval = arguments.keyframe_interval;
 			variables.keyframe_rate		= arguments.keyframe_rate;
+			variables.public			= arguments.public;
 			if (not isNull(arguments.notifications)) {
 				variables.notifications 	= arguments.notifications;
 			}
@@ -135,6 +138,7 @@
 			if (variables.frame_rate) 			{data.frame_rate 		= variables.frame_rate;}
 			if (variables.keyframe_interval) 	{data.keyframe_interval	= variables.keyframe_interval;}
 			if (variables.keyframe_rate) 		{data.keyframe_rate		= variables.keyframe_rate;}
+			if (variables.public) 				{data.public			= variables.public;}
 			if (not isNull(variables.notifications)) {
 				data.notifications 	= variables.notifications.getData();
 			}

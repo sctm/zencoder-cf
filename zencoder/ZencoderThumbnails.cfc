@@ -36,10 +36,11 @@
 	</cffunction>
 	
 	<!--- addThumbnail --->
-	<cffunction name="addThumbnail" access="public" returntype="void" output="false" hint="This will add a thumbnail to the array.">
+	<cffunction name="addThumbnail" access="public" returntype="ZencoderThumbnails" output="false" hint="This will add a thumbnail to the array.">
 			<cfargument name="thumbnail" type="struct" required="yes" hint="This is a thumbnail object.  The definition can be obtained from the Zencoder API.">
 		<cfscript>
 			arrayAppend(variables.thumbnailArray, arguments.thumbnail);
+			return this;
 		</cfscript>
 	</cffunction>
 	
