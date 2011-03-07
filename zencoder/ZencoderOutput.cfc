@@ -47,6 +47,7 @@
 	<cfproperty name="keyframe_interval" type="numeric" hint="Set the maximum number of frames between each keyframe. By default, a keyframe will be created at most every 250 frames. 0 to use default." />
 	<cfproperty name="keyframe_rate" 	type="numeric" 	hint="Set the number of keyframes per second. So a value of 0.5 would result in one keyframe every two seconds. A value of 3 would result in three keyframes per second." />
 	<cfproperty name="notifications" 	type="ZencoderNotification" hint="This is the notification(s) to use for this output." />
+	<cfproperty name="thumbnails" 		type="ZencoderThumbnails" 	hint="This is the thumbnail(s) to use for this output." />
 	
 	<!--- init --->
 	<cffunction name="init" access="public" returntype="ZencoderOutput" output="false" hint="Constructor method.">
@@ -72,6 +73,7 @@
 			<cfargument name="keyframe_interval" type="numeric" required="no" default="0" 			hint="Set the maximum number of frames between each keyframe. By default, a keyframe will be created at most every 250 frames. 0 to use default.">
 			<cfargument name="keyframe_rate" 	type="numeric" 	required="no" default="0" 			hint="Set the number of keyframes per second. So a value of 0.5 would result in one keyframe every two seconds. A value of 3 would result in three keyframes per second.">
 			<cfargument name="notifications"	type="ZencoderNotification" required="no" default="#javaCast("null", 0)#" hint="This is the notification(s) to use for this output.">
+			<cfargument name="thumbnails"		type="ZencoderThumbnails" 	required="no" default="#javaCast("null", 0)#" hint="This is the thumbnail(s) to use for this output.">
 		<cfscript>
 			// set the data to the variables scope
 			variables.base_url 			= arguments.base_url;
@@ -97,6 +99,9 @@
 			variables.keyframe_rate		= arguments.keyframe_rate;
 			if (not isNull(arguments.notifications)) {
 				variables.notifications 	= arguments.notifications;
+			}
+			if (not isNull(arguments.thumbnails)) {
+				variables.thumbnails 	= arguments.thumbnails;
 			}
 			return this;
 		</cfscript>
@@ -132,6 +137,9 @@
 			if (variables.keyframe_rate) 		{data.keyframe_rate		= variables.keyframe_rate;}
 			if (not isNull(variables.notifications)) {
 				data.notifications 	= variables.notifications.getData();
+			}
+			if (not isNull(variables.thumbnails)) {
+				data.thumbnails 	= variables.thumbnails.getData();
 			}
 			return data;
 		</cfscript>
