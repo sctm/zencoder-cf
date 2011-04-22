@@ -26,7 +26,7 @@
 <cfcomponent displayname="ZencoderOutput" hint="This is the Zencoder output object." output="false" accessors="true">
 	
 	<cfproperty name="base_url" 		type="string" 	hint="This is the base URL to export the transcoded media.  Determines a directory to put the output file in, but not the filename." />
-	<cfproperty name="filename" 		type="string" 	hint="This is the API Base URL for the Zencoder API." />
+	<cfproperty name="filename" 		type="string" 	hint="The filename of a finished file. If you supply a filename but not a base_url, Zencoder will store the file with this filename in a S3 bucket temporarily for you to download." />
 	<cfproperty name="label" 			type="string" 	hint="If set to zero, it will use the Zencoder default of 5.  The maximum allowed is 25." />
 	<cfproperty name="video_codec" 		type="string" 	hint="The output video codec to use." />
 	<cfproperty name="speed" 			type="numeric" 	hint="A target transcoding speed, from 1 to 5." />
@@ -54,7 +54,7 @@
 	<!--- init --->
 	<cffunction name="init" access="public" returntype="ZencoderOutput" output="false" hint="Constructor method.">
 			<cfargument name="base_url" 		type="string" 	required="yes" hint="This is the base URL to export the transcoded media.  Determines a directory to put the output file in, but not the filename.">
-			<cfargument name="filename" 		type="string" 	required="yes" hint="This is the API Base URL for the Zencoder API.">
+			<cfargument name="filename" 		type="string" 	required="yes" hint="The filename of a finished file. If you supply a filename but not a base_url, Zencoder will store the file with this filename in a S3 bucket temporarily for you to download.">
 			<cfargument name="label" 			type="string" 	required="yes" hint="If set to zero, it will use the Zencoder default of 5.  The maximum allowed is 25.">
 			<cfargument name="video_codec"		type="string" 	required="no" default="" 			hint="The output video codec to use.">
 			<cfargument name="speed"			type="numeric" 	required="no" default="2" 			hint="A target transcoding speed, from 1 to 5.">
