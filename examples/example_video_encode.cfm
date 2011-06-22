@@ -45,7 +45,7 @@
 	// setup initial settings for formats
 	sourceFileURL 	= "s3://MY_S3_BUCKET_URL/source/";
 	base_url 		= "s3://MY_S3_BUCKET_URL/video/";
-	notifyUrl		= "http://URL_FOR_NOTIFICATIONS";
+	notifyUrl		= "http://URL_FOR_NOTIFICATIONS";		// this can be an email address as well
 	fileKey			= "FILE_NAME_KEY";
 	
 	// video information
