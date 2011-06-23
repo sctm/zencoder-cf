@@ -130,7 +130,7 @@
 			data.speed 				= variables.speed;
 			if (variables.width) 					{data.width 			= variables.width;}
 			if (variables.height) 					{data.height 			= variables.height;}
-			if (lentrim((variables.aspect_mode)))	{data.aspect_mode 		= variables.aspect_mode;}
+			if (len(trim(variables.aspect_mode)))	{data.aspect_mode 		= variables.aspect_mode;}
 			data.quality 			= variables.quality;
 			if (variables.video_bitrate) 			{data.video_bitrate 	= variables.video_bitrate;}
 			if (variables.bitrate_cap) 				{data.bitrate_cap 		= variables.bitrate_cap;}
