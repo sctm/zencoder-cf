@@ -28,6 +28,7 @@
 	<cfproperty name="base_url" 		type="string" 	hint="This is the base URL to export the transcoded media.  Determines a directory to put the output file in, but not the filename." />
 	<cfproperty name="filename" 		type="string" 	hint="The filename of a finished file. If you supply a filename but not a base_url, Zencoder will store the file with this filename in a S3 bucket temporarily for you to download." />
 	<cfproperty name="label" 			type="string" 	hint="If set to zero, it will use the Zencoder default of 5.  The maximum allowed is 25." />
+	<cfproperty name="device_profile"	type="string"	hint="The device profile to use as an alternative to specifying video/audio codecs and associated attributes. Options are: mobile/advanced, mobile/baseline, mobile/legacy, v1/mobile/advanced, v1/mobile/baseline, v1/mobile/legacy, v2/mobile/legacy" />
 	<cfproperty name="video_codec" 		type="string" 	hint="The output video codec to use." />
 	<cfproperty name="speed" 			type="numeric" 	hint="A target transcoding speed, from 1 to 5." />
 	<cfproperty name="width" 			type="numeric" 	hint="A width for the target media.  0 for not set." />
@@ -57,6 +58,7 @@
 			<cfargument name="filename" 		type="string" 	required="yes" hint="The filename of a finished file. If you supply a filename but not a base_url, Zencoder will store the file with this filename in a S3 bucket temporarily for you to download.">
 			<cfargument name="label" 			type="string" 	required="yes" hint="If set to zero, it will use the Zencoder default of 5.  The maximum allowed is 25.">
 			<cfargument name="video_codec"		type="string" 	required="no" default="" 			hint="The output video codec to use.">
+			<cfargument name="device_profile"	type="string"	required="no" default=""			hint="The device profile to use, see hint in cfproperty above or look here: https://app.zencoder.com/docs/api/encoding/general-output-settings/device-profile" />
 			<cfargument name="speed"			type="numeric" 	required="no" default="2" 			hint="A target transcoding speed, from 1 to 5.">
 			<cfargument name="width"			type="numeric" 	required="no" default="0" 			hint="A width for the target media.  0 for not set.">
 			<cfargument name="height"			type="numeric" 	required="no" default="0" 			hint="A height for the target media.  0 for not set.">
@@ -84,6 +86,7 @@
 			variables.filename 			= arguments.filename;
 			variables.label 			= arguments.label;
 			variables.video_codec 		= arguments.video_codec;
+			variables.device_profile    = arguments.device_profile;
 			variables.speed 			= arguments.speed;
 			variables.width 			= arguments.width;
 			variables.height 			= arguments.height;
@@ -122,17 +125,18 @@
 			data.base_url 			= variables.base_url;
 			data.filename 			= variables.filename;
 			data.label 				= variables.label;
-			if (len(variables.video_codec))		{data.video_codec 		= variables.video_codec;}
+			if (len(trim(variables.video_codec)))	{data.video_codec 		= variables.video_codec;}
+			if (len(trim(variables.device_profile)))		{data.device_profile 		= variables.device_profile;}
 			data.speed 				= variables.speed;
-			if (variables.width) 				{data.width 			= variables.width;}
-			if (variables.height) 				{data.height 			= variables.height;}
-			if (len(variables.aspect_mode))		{data.aspect_mode 		= variables.aspect_mode;}
+			if (variables.width) 					{data.width 			= variables.width;}
+			if (variables.height) 					{data.height 			= variables.height;}
+			if (len(trim(variables.aspect_mode)))	{data.aspect_mode 		= variables.aspect_mode;}
 			data.quality 			= variables.quality;
-			if (variables.video_bitrate) 		{data.video_bitrate 	= variables.video_bitrate;}
-			if (variables.bitrate_cap) 			{data.bitrate_cap 		= variables.bitrate_cap;}
-			if (variables.buffer_size) 			{data.buffer_size	 	= variables.buffer_size;}
-			if (variables.max_video_bitrate)	{data.max_video_bitrate	= variables.max_video_bitrate;}
-			if (len(variables.audio_codec))		{data.audio_codec 		= variables.audio_codec;}
+			if (variables.video_bitrate) 			{data.video_bitrate 	= variables.video_bitrate;}
+			if (variables.bitrate_cap) 				{data.bitrate_cap 		= variables.bitrate_cap;}
+			if (variables.buffer_size) 				{data.buffer_size	 	= variables.buffer_size;}
+			if (variables.max_video_bitrate)		{data.max_video_bitrate	= variables.max_video_bitrate;}
+			if (len(trim(variables.audio_codec)))		{data.audio_codec 		= variables.audio_codec;}
 			if (variables.audio_bitrate) {
 				data.audio_bitrate 		= variables.audio_bitrate;
 			} else {
