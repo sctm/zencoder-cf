@@ -127,16 +127,19 @@
 			if (variables.width) 				{data.width 			= variables.width;}
 			if (variables.height) 				{data.height 			= variables.height;}
 			if (len(variables.aspect_mode))		{data.aspect_mode 		= variables.aspect_mode;}
-			data.quality 			= variables.quality;
-			if (variables.video_bitrate) 		{data.video_bitrate 	= variables.video_bitrate;}
+			if (variables.video_bitrate) {
+				data.video_bitrate 	= variables.video_bitrate;
+			} else {
+				data.quality 		= variables.quality;
+			}
 			if (variables.bitrate_cap) 			{data.bitrate_cap 		= variables.bitrate_cap;}
 			if (variables.buffer_size) 			{data.buffer_size	 	= variables.buffer_size;}
 			if (variables.max_video_bitrate)	{data.max_video_bitrate	= variables.max_video_bitrate;}
 			if (len(variables.audio_codec))		{data.audio_codec 		= variables.audio_codec;}
 			if (variables.audio_bitrate) {
-				data.audio_bitrate 		= variables.audio_bitrate;
+				data.audio_bitrate 	= variables.audio_bitrate;
 			} else {
-				data.audio_quality 		= variables.audio_quality;
+				data.audio_quality 	= variables.audio_quality;
 			}
 			if (variables.audio_sample_rate)	{data.audio_sample_rate	= variables.audio_sample_rate;}
 			if (variables.max_frame_rate) 		{data.max_frame_rate 	= variables.max_frame_rate;}
@@ -151,7 +154,7 @@
 				data.thumbnails 	= variables.thumbnails.getData();
 			}
 			if (not isNull(variables.headers)) {
-				data.headers 	= variables.headers;
+				data.headers 		= variables.headers;
 			}
 			return data;
 		</cfscript>
